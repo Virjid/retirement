@@ -8,7 +8,12 @@ import io.virjid.retirement.common.StringHelper;
 import io.virjid.retirement.dao.AccountDao;
 import io.virjid.retirement.dto.AccountContext;
 import io.virjid.retirement.entity.AccountEntity;
+import io.virjid.retirement.exception.ThisSystemException;
 import io.virjid.retirement.service.AccountService;
+
+import static io.virjid.retirement.common.validator.ValidateHelper.*;
+
+import java.util.Objects;
 
 @Service
 public class AccountServiceImpl implements AccountService, StringHelper {
@@ -18,7 +23,7 @@ public class AccountServiceImpl implements AccountService, StringHelper {
 	@Override
 	public AccountContext queryByAccount(String account) {
 		AccountEntity entity = accountDao.queryByAccount(account);
-		
+
 		AccountContext result = new AccountContext();
 		result.setAccount(entity.getAccount());
 		result.setAddress(entity.getAddress());
@@ -30,25 +35,57 @@ public class AccountServiceImpl implements AccountService, StringHelper {
 		result.setName(entity.getName());
 		result.setRole(entity.getRole());
 		result.setStatus(entity.getStatus());
-		
+
 		return result;
 	}
 
 	@Override
-	public void insert(AccountAddAo ao) throws Exception {
+	public AccountEntity insert(AccountAddAo ao) throws Exception {
+		//1 验证或清理参数
+		//1.1 验证必要参数是否非空
+		String account = $("账号", ao.getAccount());
+		String address = $("地址", ao.getAddress());
+		String contact = $("联系方式", ao.getContact());
+		String idCard = $("身份证", ao.getIdCard());
+		String password = $("密码", ao.getPassword());
+		String passwordConfirm = $("密码确认", ao.getPasswordConfirm());
+		String name = $("名字", ao.getName());
+		
+		//1.2 限制个别参数的长度范围
+		assertLength("账号", account, 4, 16);
+		assertLength("名字", name, 2, 16);
+		assertLength("密码", password, 6, 16);
+		
+		//1.3 验证参数的格式是否匹配
+		assertMatch("账号只能是字母和数字组成的6-16位", account, "[0-9a-zA-Z]{6,16}");
+		assertMatch("名字必须是中文2-16位", name, "[\u4e00-\u9fa5·]{2,16}");
+		assertAlphanumeric("密码", password);
+		
+		//2 业务逻辑
+		//2.1 验证密码的两次输入是否匹配
+		if (!Objects.equals(password, passwordConfirm))
+			throw new ThisSystemException("password.not-same", "两次密码不一致");
+		
+		//2.2 验证账号是否已经被注册了
+		if (accountDao.isExistByAccount(account))
+			throw new ThisSystemException("acount.exists", "账号已存在");
+		
+		//2.3 组装实体并插入用户信息
 		AccountEntity entity = new AccountEntity();
-		entity.setAccount(ao.getAccount());
-		entity.setAddress(ao.getAddress());
+		entity.setAccount(account);
+		entity.setAddress(address);
 		entity.setBirthday(ao.getBirthday());
-		entity.setContact(ao.getContact());
+		entity.setContact(contact);
 		entity.setId(uuid());
-		entity.setIdCard(ao.getIdCard());
+		entity.setIdCard(idCard);
 		entity.setRole(ao.getRole());
 		entity.setStatus(ao.getStatus());
-		entity.setPassword(ao.getPassword());
+		entity.setPassword(password);
 		entity.setMale(ao.isMale());
-		entity.setName(ao.getName());
-		
+		entity.setName(name);
 		accountDao.insert(entity);
+		
+		//3 组装业务结果并返回
+		return entity;
 	}
 }

@@ -2,9 +2,10 @@ package io.virjid.retirement.service;
 
 import io.virjid.retirement.ao.AccountAddAo;
 import io.virjid.retirement.dto.AccountContext;
+import io.virjid.retirement.entity.AccountEntity;
 
 public interface AccountService {
 	public AccountContext queryByAccount(String account) throws Exception;
 	
-	public void insert(AccountAddAo ao) throws Exception;
+	public AccountEntity insert(AccountAddAo ao) throws Exception;
 }

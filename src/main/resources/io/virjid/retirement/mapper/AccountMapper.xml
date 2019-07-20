@@ -4,25 +4,34 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.virjid.retirement.dao.AccountDao">
 	<resultMap type="io.virjid.retirement.entity.AccountEntity"
-		id="accountMapp">
+		id="accountMap">
 		<id column="id" property="id" />
 		<result column="id_card" property="idCard" />
 	</resultMap>
 
-	<select id="queryByAccount">
+	<select id="queryByAccount" resultMap="accountMap">
 	<![CDATA[
 	select * 
 	from sys_account 
-	where account=#{account};
+	where account=#{account}
 	]]>
 	</select>
 	
-	<insert id="insert">
+	<select id="isExistByAccount" resultType="boolean">
+	<![CDATA[
+	select 
+	count(account)>0		
+	from sys_account
+	where account=#{account} and status in (0,1);
+	]]>
+	</select>
+
+	<insert id="insert" parameterType="io.virjid.retirement.entity.AccountEntity">
 	<![CDATA[
 	insert into sys_account 
 	(id,account,password,name,birthday,male,address,id_card,contact,role,status) 
 	values 
-	(#{id},#{account},#{password},#{name},#{birthday},#{male?1:0},#{address},#{idCard},#{contact},#{role},#{status});
+	(#{id},#{account},#{password},#{name},#{birthday},#{male,jdbcType=TINYINT,javaType=Boolean},#{address},#{idCard},#{contact},#{role},#{status});
 	]]>
 	</insert>
 </mapper>

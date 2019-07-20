@@ -10,6 +10,7 @@ import io.virjid.retirement.ApplicationContextUtil;
 import io.virjid.retirement.ao.AccountAddAo;
 import io.virjid.retirement.common.DateUtil;
 import io.virjid.retirement.common.JSONResponseHttpServlet;
+import io.virjid.retirement.dto.AccountContext;
 import io.virjid.retirement.service.AccountService;
 
 @WebServlet("/account/register")
@@ -47,6 +48,17 @@ public class AccountRegisterServlet extends JSONResponseHttpServlet {
 		ao.setBirthday(birthday);
 		
 		service.insert(ao);
-		return ao;
+		
+		AccountContext act = new AccountContext();
+		act.setAccount(account);
+		act.setAddress(address);
+		act.setBirthday(birthday);
+		act.setContact(contact);
+		act.setMale(male);
+		act.setRole(role);
+		act.setName(name);
+		act.setStatus(status);
+		act.setIdCard(idCard);
+		return act;
 	}
 }

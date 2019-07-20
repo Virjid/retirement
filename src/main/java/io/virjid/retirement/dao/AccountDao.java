@@ -6,5 +6,5 @@ public interface AccountDao extends CUDDao<AccountEntity, String>,QueryDao<Accou
 	
 	AccountEntity queryByAccount(String account);
 	
-	boolean isExistByAccount(String account);
+	Boolean isExistByAccount(String account);
 }
