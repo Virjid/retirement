@@ -3,16 +3,20 @@ package io.virjid.retirement.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageInfo;
+
 import io.virjid.retirement.ao.AccountAddAo;
 import io.virjid.retirement.common.StringHelper;
 import io.virjid.retirement.dao.AccountDao;
 import io.virjid.retirement.dto.AccountContext;
+import io.virjid.retirement.dto.QueryResult;
 import io.virjid.retirement.entity.AccountEntity;
 import io.virjid.retirement.exception.ThisSystemException;
 import io.virjid.retirement.service.AccountService;
 
 import static io.virjid.retirement.common.validator.ValidateHelper.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -87,5 +91,29 @@ public class AccountServiceImpl implements AccountService, StringHelper {
 		
 		//3 组装业务结果并返回
 		return entity;
+	}
+	
+	@Override
+	public QueryResult queryByKey(String key, Integer pageNo, Integer pageSize) throws Exception {
+		key=trimAsNull(key);
+		if(key!=null) key=key+"%";
+		
+		if(pageNo==null) pageNo=1;
+		
+		if(pageSize==null) pageSize=10;
+		
+		List<AccountEntity> rows = accountDao.selectByKey(key,pageNo,pageSize);
+		
+		PageInfo<AccountEntity> pageInfo=new PageInfo<>(rows);
+		
+		int totalRows=(int)pageInfo.getTotal();
+		
+		QueryResult result=new QueryResult();
+		result.setPageNo(pageNo);
+		result.setPageSize(pageSize);
+		result.setTotalRows(totalRows);
+		result.setRows(rows);
+		
+		return result;
 	}
 }

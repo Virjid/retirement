@@ -25,6 +25,17 @@
 	where account=#{account} and status in (0,1);
 	]]>
 	</select>
+	
+	<select id="selectByKey" resultMap="accountMap">
+	select *
+	from sys_account
+	where status=0
+	<if test="key!=null">
+			and (account like #{key} or name like #{key})
+	</if>
+	order by account desc
+	limit ${(pageNo-1)*pageSize},${pageSize}
+	</select>
 
 	<insert id="insert" parameterType="io.virjid.retirement.entity.AccountEntity">
 	<![CDATA[

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.virjid.retirement.ApplicationContextUtil;
 import io.virjid.retirement.common.JSONResponseHttpServlet;
-import io.virjid.retirement.dto.AccountContext;
+import io.virjid.retirement.dto.QueryResult;
 import io.virjid.retirement.service.AccountService;
 
 @WebServlet("/account/query")
@@ -17,8 +17,10 @@ public class AccountQueryServlet extends JSONResponseHttpServlet {
 	@Override
 	protected Object handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		String account = req.getParameter("account");
+		Integer no = Integer.valueOf(req.getParameter("no"));
+		Integer size = Integer.valueOf(req.getParameter("size"));
 		
-		AccountContext data = service.queryByAccount(account);
+		QueryResult data = service.queryByKey(account, no, size);
 		return data;
 	}
 	
