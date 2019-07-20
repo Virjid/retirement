@@ -8,7 +8,6 @@ public class ApplicationContextUtil {
 	
 	static {
 		CONTEXT=new ClassPathXmlApplicationContext("classpath:/spring-*.xml");
-		System.out.println(CONTEXT.getBeanDefinitionCount());
 	}
 	
 	public static <T> T getBean(Class<T> type) {

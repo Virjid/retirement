@@ -5,9 +5,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper=false)
-@Data
-public class OldmanFamilyEntity extends AbstractAccountEntity {
+public class OldmanFamilyEntity extends AccountEntity {
 	private static final long serialVersionUID = -5819311386742961161L;
 	
 	private List<OldmanEntity> oldmans;

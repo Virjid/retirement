@@ -26,7 +26,7 @@
 				<prop key="lazyLoadingEnabled">true</prop>
 			</props>
 		</property>
-		<property name="mapperLocations" value="classpath:/mapper/*.xml"></property>
+		<property name="mapperLocations" value="classpath:/io/virjid/retirement/mapper/*.xml"></property>
 		
 		<property name="typeAliasesPackage" value="io.virjid.retirement.entity"></property>
 		<property name="transactionFactory" >

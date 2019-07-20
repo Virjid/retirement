@@ -5,8 +5,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper=false)
-@Data
 public class NurseEntity extends AbstractStaffEntity {
 	private static final long serialVersionUID = -7066957057580276326L;
 	
