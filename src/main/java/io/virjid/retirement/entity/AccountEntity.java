@@ -6,8 +6,9 @@ import java.time.LocalDate;
 public class AccountEntity implements Serializable {
 	private static final long serialVersionUID = -1277738782320198390L;
 	
-	public static final int ROLE_STAFF=0,ROLE_MANAGER=1,ROLE_USER=2;
+	public static final int ROLE_STAFF_DOCTOR=0,ROLE_MANAGER=1,ROLE_USER_OLDMAN=2,ROLE_USER_FAMILY=3;
 	public static final int STATUS_NORMAL=0,STATUS_FREEZE=1,STATUS_INVALID=2;
+	public static final int FMALE=0,MALE=1;
 	
 	private String id;              // 唯一的ID号
 	

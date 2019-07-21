@@ -3,7 +3,7 @@ package io.virjid.retirement.dto;
 import java.time.LocalDate;
 
 public class AccountContext {
-	private String id;             // 唯一的ID号
+	private String id;              // 唯一的ID号
 	
 	private String account;         // 账户
 	
@@ -14,8 +14,8 @@ public class AccountContext {
 	private String idCard;          // 身份证
 	private String contact;         // 联系方式
 	
-	private int role;               // 角色
-	private int status;             // 账号状态
+	private Integer role;               // 角色
+	private Integer status;             // 账号状态
 	public String getId() {
 		return id;
 	}
@@ -64,18 +64,22 @@ public class AccountContext {
 	public void setContact(String contact) {
 		this.contact = contact;
 	}
-	public int getRole() {
+	public Integer getRole() {
 		return role;
 	}
-	public void setRole(int role) {
+	public void setRole(Integer role) {
 		this.role = role;
 	}
-	public int getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	
-	
+	@Override
+	public String toString() {
+		return "AccountContext [id=" + id + ", account=" + account + ", name=" + name + ", birthday=" + birthday
+				+ ", male=" + male + ", address=" + address + ", idCard=" + idCard + ", contact=" + contact + ", role="
+				+ role + ", status=" + status + "]";
+	}
 }

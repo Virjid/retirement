@@ -29,10 +29,11 @@
 	<select id="selectByKey" resultMap="accountMap">
 	select *
 	from sys_account
-	where status=0
+	where (status=0 or status=1) 
 	<if test="key!=null">
 			and (account like #{key} or name like #{key})
 	</if>
+	and role=#{role} 
 	order by account desc
 	limit ${(pageNo-1)*pageSize},${pageSize}
 	</select>

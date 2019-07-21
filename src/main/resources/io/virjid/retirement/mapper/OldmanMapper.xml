@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.virjid.retirement.dao.OldmanDao">
+	<resultMap type="io.virjid.retirement.entity.OldmanEntity"
+		id="oldmanMap">
+		<id column="id" property="id" />
+		<result column="id_card" property="idCard" />
+		<result column="doctor_id" property="doctorId" />
+		<result column="nurse_id" property="nurseId" />
+		<result column="care_id" property="careId" />
+		<association property="doctor" columnPrefix="doctor_"
+			javaType="io.virjid.retirement.entity.DoctorEntity">
+			<id column="id" property="id" />
+		</association>
+	</resultMap>
+
+	<insert id="insertOldman"
+		parameterType="io.virjid.retirement.entity.OldmanEntity">
+	<![CDATA[
+	insert into usr_oldman 
+	(id, doctor_id, nurse_id, care_id) values 
+	(#{id},#{doctorId},#{nurseId},#{careId});
+	]]>
+	</insert>
+</mapper>

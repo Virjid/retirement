@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.virjid.retirement.dao.DoctorDao">
+
+	<resultMap type="io.virjid.retirement.entity.DoctorEntity"
+		id="doctorMap">
+		<id column="id" property="id" />
+		<result column="id_card" property="idCard" />
+		<result column="account" property="account" />
+		<result column="name" property="name" />
+		<result column="birthday" property="birthday" />
+		<result column="male" property="male" />
+		<result column="address" property="address" />
+		<result column="cantact" property="contact" />
+		<result column="role" property="role" />
+		<result column="status" property="status" />
+		<collection property="oldmans" columnPrefix="oldman_"
+			ofType="io.virjid.retirement.entity.OldmanEntity">
+			<id column="id" property="id" />
+			<result column="account" property="account" />
+			<result column="name" property="name" />
+			<result column="male" property="male" />
+		</collection>
+	</resultMap>
+
+	<insert id="insertDoctor"
+		parameterType="io.virjid.retirement.entity.DoctorEntity">
+	<![CDATA[
+	insert into stf_doctor (id) values (#{id});
+	]]>
+	</insert>
+	
+	<select id="queryByAccount" resultMap="doctorMap">
+	<![CDATA[
+	select ad.id id,
+	       ad.name name,
+	       ad.password password,
+	       ad.account account,
+	       ad.male male,
+	       ad.address address,
+	       ad.id_card id_card,
+	       ad.contact contact,
+	       ad.role role,
+	       ad.status status,
+	       ad.birthday birthday,
+	       ao.id oldman_id,
+	       ao.account oldman_account,
+	       ao.name oldman_name,
+	       ao.male oldman_male 
+	from sys_account as ad 
+	inner join stf_doctor as d on ad.id=d.id 
+	inner join usr_oldman as o on d.id=o.doctor_id 
+	inner join sys_account as ao on ao.id=o.id 
+	where ad.account=#{account}
+	]]>
+	</select>
+</mapper>

@@ -1,4 +1,4 @@
-package io.virjid.retirement.web.servlet.account;
+package io.virjid.retirement.web.servlet.doctor;
 
 import java.time.LocalDate;
 
@@ -10,13 +10,14 @@ import io.virjid.retirement.ApplicationContextUtil;
 import io.virjid.retirement.ao.AccountAddAo;
 import io.virjid.retirement.common.DateUtil;
 import io.virjid.retirement.common.JSONResponseHttpServlet;
-import io.virjid.retirement.dto.AccountContext;
-import io.virjid.retirement.service.AccountService;
+import io.virjid.retirement.dto.DoctorContext;
+import io.virjid.retirement.entity.AccountEntity;
+import io.virjid.retirement.service.DoctorService;
 
-@WebServlet("/account/register")
-public class AccountRegisterServlet extends JSONResponseHttpServlet {
-	private static final long serialVersionUID = -3228160225365819182L;
-	private AccountService service = ApplicationContextUtil.getBean(AccountService.class);
+@WebServlet("/doctor/register")
+public class DoctorRegisterServlet extends JSONResponseHttpServlet {
+	private static final long serialVersionUID = 4058654546620263769L;
+	private DoctorService service = ApplicationContextUtil.getBean(DoctorService.class);
 
 	@Override
 	protected Object handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -30,9 +31,6 @@ public class AccountRegisterServlet extends JSONResponseHttpServlet {
 		Boolean male = req.getParameter("male").equals("1");
 		String address = req.getParameter("address");
 		String contact = req.getParameter("contact");
-		
-		Integer role = Integer.valueOf(req.getParameter("role"));
-		Integer status = Integer.valueOf(req.getParameter("status"));
 
 		AccountAddAo ao = new AccountAddAo();
 		ao.setAccount(account);
@@ -43,22 +41,24 @@ public class AccountRegisterServlet extends JSONResponseHttpServlet {
 		ao.setName(name);
 		ao.setPassword(password);
 		ao.setPasswordConfirm(passwordConfirm);
-		ao.setRole(role);
-		ao.setStatus(status);
+		ao.setRole(AccountEntity.ROLE_STAFF_DOCTOR);
+		ao.setStatus(AccountEntity.STATUS_NORMAL);
 		ao.setBirthday(birthday);
 		
 		service.insert(ao);
 		
-		AccountContext act = new AccountContext();
+		DoctorContext act = new DoctorContext();
+		
 		act.setAccount(account);
 		act.setAddress(address);
 		act.setBirthday(birthday);
 		act.setContact(contact);
 		act.setMale(male);
-		act.setRole(role);
+		act.setRole(AccountEntity.ROLE_STAFF_DOCTOR);
 		act.setName(name);
-		act.setStatus(status);
+		act.setStatus(AccountEntity.STATUS_NORMAL);
 		act.setIdCard(idCard);
+		
 		return act;
 	}
 }

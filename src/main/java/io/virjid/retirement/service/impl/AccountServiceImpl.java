@@ -1,8 +1,14 @@
 package io.virjid.retirement.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static io.virjid.retirement.common.validator.ValidateHelper.$;
+import static io.virjid.retirement.common.validator.ValidateHelper.assertAlphanumeric;
+import static io.virjid.retirement.common.validator.ValidateHelper.assertLength;
+import static io.virjid.retirement.common.validator.ValidateHelper.assertMatch;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import com.github.pagehelper.PageInfo;
 
 import io.virjid.retirement.ao.AccountAddAo;
@@ -12,22 +18,13 @@ import io.virjid.retirement.dto.AccountContext;
 import io.virjid.retirement.dto.QueryResult;
 import io.virjid.retirement.entity.AccountEntity;
 import io.virjid.retirement.exception.ThisSystemException;
-import io.virjid.retirement.service.AccountService;
 
-import static io.virjid.retirement.common.validator.ValidateHelper.*;
-
-import java.util.List;
-import java.util.Objects;
-
-@Service
-public class AccountServiceImpl implements AccountService, StringHelper {
-	@Autowired
-	private AccountDao accountDao;
-
-	@Override
-	public AccountContext queryByAccount(String account) {
-		AccountEntity entity = accountDao.queryByAccount(account);
-
+public class AccountServiceImpl<D extends AccountDao> implements StringHelper  {
+	@Autowired protected D dao;
+	
+	public AccountContext queryByAccount(String account) throws Exception {
+		AccountEntity entity = dao.queryByAccount(account);
+		
 		AccountContext result = new AccountContext();
 		result.setAccount(entity.getAccount());
 		result.setAddress(entity.getAddress());
@@ -43,8 +40,30 @@ public class AccountServiceImpl implements AccountService, StringHelper {
 		return result;
 	}
 
-	@Override
-	public AccountEntity insert(AccountAddAo ao) throws Exception {
+	public QueryResult queryByKey(String key, Integer pageNo, Integer pageSize, Integer role) throws Exception {
+		key=trimAsNull(key);
+		if(key!=null) key=key+"%";
+		
+		if(pageNo==null) pageNo=1;
+		
+		if(pageSize==null) pageSize=10;
+		
+		List<?> rows = dao.selectByKey(key,pageNo,pageSize,role);
+		
+		PageInfo<?> pageInfo=new PageInfo<>(rows);
+		
+		int totalRows=(int)pageInfo.getTotal();
+		
+		QueryResult result=new QueryResult();
+		result.setPageNo(pageNo);
+		result.setPageSize(pageSize);
+		result.setTotalRows(totalRows);
+		result.setRows(rows);
+		
+		return result;
+	}
+	
+	public <E extends AccountEntity> E insert(AccountAddAo ao, Class<E> clazz) throws Exception {
 		//1 验证或清理参数
 		//1.1 验证必要参数是否非空
 		String account = $("账号", ao.getAccount());
@@ -59,23 +78,23 @@ public class AccountServiceImpl implements AccountService, StringHelper {
 		assertLength("账号", account, 4, 16);
 		assertLength("名字", name, 2, 16);
 		assertLength("密码", password, 6, 16);
-		
+
 		//1.3 验证参数的格式是否匹配
 		assertMatch("账号只能是字母和数字组成的6-16位", account, "[0-9a-zA-Z]{6,16}");
 		assertMatch("名字必须是中文2-16位", name, "[\u4e00-\u9fa5·]{2,16}");
 		assertAlphanumeric("密码", password);
-		
+
 		//2 业务逻辑
 		//2.1 验证密码的两次输入是否匹配
 		if (!Objects.equals(password, passwordConfirm))
 			throw new ThisSystemException("password.not-same", "两次密码不一致");
-		
+
 		//2.2 验证账号是否已经被注册了
-		if (accountDao.isExistByAccount(account))
+		if (dao.isExistByAccount(account))
 			throw new ThisSystemException("acount.exists", "账号已存在");
-		
+
 		//2.3 组装实体并插入用户信息
-		AccountEntity entity = new AccountEntity();
+		E entity = clazz.newInstance();
 		entity.setAccount(account);
 		entity.setAddress(address);
 		entity.setBirthday(ao.getBirthday());
@@ -87,33 +106,9 @@ public class AccountServiceImpl implements AccountService, StringHelper {
 		entity.setPassword(password);
 		entity.setMale(ao.isMale());
 		entity.setName(name);
-		accountDao.insert(entity);
-		
+		dao.insert(entity);
+
 		//3 组装业务结果并返回
 		return entity;
-	}
-	
-	@Override
-	public QueryResult queryByKey(String key, Integer pageNo, Integer pageSize) throws Exception {
-		key=trimAsNull(key);
-		if(key!=null) key=key+"%";
-		
-		if(pageNo==null) pageNo=1;
-		
-		if(pageSize==null) pageSize=10;
-		
-		List<AccountEntity> rows = accountDao.selectByKey(key,pageNo,pageSize);
-		
-		PageInfo<AccountEntity> pageInfo=new PageInfo<>(rows);
-		
-		int totalRows=(int)pageInfo.getTotal();
-		
-		QueryResult result=new QueryResult();
-		result.setPageNo(pageNo);
-		result.setPageSize(pageSize);
-		result.setTotalRows(totalRows);
-		result.setRows(rows);
-		
-		return result;
 	}
 }

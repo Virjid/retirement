@@ -1,10 +1,10 @@
-package io.virjid.retirement.entity;
+package io.virjid.retirement.dto;
 
 import java.util.List;
 
-public class NurseEntity extends AccountEntity {
-	private static final long serialVersionUID = -7066957057580276326L;
-	
+import io.virjid.retirement.entity.OldmanEntity;
+
+public class DoctorContext extends AccountContext {
 	private List<OldmanEntity> oldmans;
 
 	public List<OldmanEntity> getOldmans() {

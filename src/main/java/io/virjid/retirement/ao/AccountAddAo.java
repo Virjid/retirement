@@ -4,16 +4,16 @@ import java.time.LocalDate;
 
 public class AccountAddAo {
 
-	private String account; // 账户
-	private String password; // 密码
-	private String passwordConfirm; // 密码确认
+	private String account;             // 账户
+	private String password;            // 密码
+	private String passwordConfirm;     // 密码确认
 
-	private String name; // 姓名
-	private LocalDate birthday; // 生日
-	private Boolean male; // 性别
-	private String address; // 地址
-	private String idCard; // 身份证
-	private String contact; // 联系方式
+	private String name;                // 姓名
+	private LocalDate birthday;         // 生日
+	private Boolean male;               // 性别
+	private String address;             // 地址
+	private String idCard;              // 身份证
+	private String contact;             // 联系方式
 	
 	private Integer role;               // 角色
 	private Integer status;             // 账号状态
