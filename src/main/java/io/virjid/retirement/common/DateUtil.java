@@ -9,4 +9,9 @@ public class DateUtil {
 		LocalDate ld = LocalDate.parse(date, df);
 		return ld;
 	}
+	
+	public static String localDateToString(LocalDate date) {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return date.format(df);
+	}
 }

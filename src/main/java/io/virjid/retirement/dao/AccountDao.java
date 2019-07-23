@@ -13,4 +13,6 @@ public interface AccountDao extends CUDDao<AccountEntity, String>,QueryDao<Accou
 	Boolean isExistByAccount(String account);
 
 	List<AccountEntity> selectByKey(@Param("key")String key, @Param("pageNo")Integer pageNo, @Param("pageSize")Integer pageSize, @Param("role")Integer role);
+	
+	void modifyPassword(@Param("id")String id, @Param("password")String password);
 }

@@ -13,10 +13,18 @@
 	<![CDATA[
 	select * 
 	from sys_account 
-	where account=#{account}
+	where account=#{account} and (status=0 or status=1)
 	]]>
 	</select>
 	
+	<select id="queryById" resultMap="accountMap">
+	<![CDATA[
+	select * 
+	from sys_account 
+	where id=#{id} and (status=0 or status=1)
+	]]>
+	</select>
+
 	<select id="isExistByAccount" resultType="boolean">
 	<![CDATA[
 	select 
@@ -25,20 +33,22 @@
 	where account=#{account} and status in (0,1);
 	]]>
 	</select>
-	
+
 	<select id="selectByKey" resultMap="accountMap">
-	select *
-	from sys_account
-	where (status=0 or status=1) 
-	<if test="key!=null">
+		select *
+		from sys_account
+		where (status=0 or status=1)
+		<if test="key!=null">
 			and (account like #{key} or name like #{key})
-	</if>
-	and role=#{role} 
-	order by account desc
-	limit ${(pageNo-1)*pageSize},${pageSize}
+		</if>
+		and role=#{role} and (status=0 or status=1)
+		order by account desc
+		limit
+		${(pageNo-1)*pageSize},${pageSize}
 	</select>
 
-	<insert id="insert" parameterType="io.virjid.retirement.entity.AccountEntity">
+	<insert id="insert"
+		parameterType="io.virjid.retirement.entity.AccountEntity">
 	<![CDATA[
 	insert into sys_account 
 	(id,account,password,name,birthday,male,address,id_card,contact,role,status) 
@@ -46,4 +56,36 @@
 	(#{id},#{account},#{password},#{name},#{birthday},#{male,jdbcType=TINYINT,javaType=Boolean},#{address},#{idCard},#{contact},#{role},#{status});
 	]]>
 	</insert>
+
+	<delete id="delete">
+	<![CDATA[
+	update sys_account set status=2 where id=#{id};
+	]]>
+	</delete>
+
+	<update id="update">
+		update sys_account
+		<set>
+			<if test="e.name!=null">
+				name=#{e.name},
+			</if>
+			<if test="e.birthday!=null">
+				birthday=#{e.birthday},
+			</if>
+			<if test="e.address!=null">
+				address=#{e.address},
+			</if>
+			<if test="e.idCard!=null">
+				idCard=#{e.idCard},
+			</if>
+			<if test="e.contact!=null">
+				contact=#{e.contact},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="modifyPassword">
+	update sys_account set password=#{password} where id=#{id};
+	</update>
 </mapper>
